@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Global Power Pyramid</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: #e8e8e8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 52px;
+      max-width: 820px;
+    }
+
+    .header-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 46px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #c9a84c 0%, #e8d48b 40%, #f0c060 70%, #c97c2a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-sub {
+      margin-top: 14px;
+      font-size: 15px;
+      color: #555;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+    }
+
+    /* ── Pyramid container ── */
+    .pyramid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 860px;
+      gap: 0;
+    }
+
+    /* ── Individual tier ── */
+    .tier {
+      position: relative;
+      display: flex;
+      align-items: center;
+      cursor: default;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 3px;
+    }
+
+    .tier::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tier:hover {
+      transform: scaleY(1.035) scaleX(1.008);
+      z-index: 10;
+      filter: brightness(1.12);
+    }
+
+    .tier:hover::before {
+      opacity: 1;
+    }
+
+    /* Width steps — tier-1 narrowest, tier-7 full width */
+    .tier-1 { width: 22%; }
+    .tier-2 { width: 35%; }
+    .tier-3 { width: 50%; }
+    .tier-4 { width: 63%; }
+    .tier-5 { width: 77%; }
+    .tier-6 { width: 89%; }
+    .tier-7 { width: 100%; }
+
+    /* Inner content wrapper */
+    .tier-inner {
+      width: 100%;
+      padding: 13px 18px 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── Gradient fills ── */
+    .tier-1 .tier-inner { background: linear-gradient(135deg, #7a1010 0%, #9c2020 50%, #b83030 100%); box-shadow: 0 0 28px rgba(180, 30, 30, 0.55), inset 0 1px 0 rgba(255,200,200,0.15); }
+    .tier-2 .tier-inner { background: linear-gradient(135deg, #7a3a00 0%, #a05010 50%, #c06820 100%); box-shadow: 0 0 24px rgba(180, 90, 10, 0.45), inset 0 1px 0 rgba(255,200,150,0.12); }
+    .tier-3 .tier-inner { background: linear-gradient(135deg, #6a5400 0%, #8c7000 50%, #b09000 100%); box-shadow: 0 0 22px rgba(160, 130, 0, 0.4), inset 0 1px 0 rgba(255,240,150,0.1); }
+    .tier-4 .tier-inner { background: linear-gradient(135deg, #1a5e1a 0%, #2a7a2a 50%, #3a9040 100%); box-shadow: 0 0 20px rgba(40, 140, 40, 0.38), inset 0 1px 0 rgba(150,255,150,0.1); }
+    .tier-5 .tier-inner { background: linear-gradient(135deg, #0d3d6e 0%, #1a5494 50%, #2268b0 100%); box-shadow: 0 0 20px rgba(30, 90, 170, 0.38), inset 0 1px 0 rgba(150,200,255,0.1); }
+    .tier-6 .tier-inner { background: linear-gradient(135deg, #3a1060 0%, #521880 50%, #6a22a0 100%); box-shadow: 0 0 20px rgba(90, 20, 160, 0.38), inset 0 1px 0 rgba(200,150,255,0.1); }
+    .tier-7 .tier-inner { background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 50%, #363636 100%); box-shadow: 0 0 20px rgba(80, 80, 80, 0.3), inset 0 1px 0 rgba(255,255,255,0.06); }
+
+    /* ── Tier layout ── */
+    .tier-header {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 5px;
+    }
+
+    .tier-icon {
+      font-size: 16px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .tier-number {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      opacity: 0.55;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .tier-name {
+      font-size: clamp(10px, 1.6vw, 13px);
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tier-entities {
+      font-size: clamp(9px, 1.3vw, 11px);
+      line-height: 1.55;
+      opacity: 0.82;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+    }
+
+    /* Expand-on-hover detail panel */
+    .tier-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, opacity 0.35s ease, margin-top 0.35s ease;
+      opacity: 0;
+      margin-top: 0;
+      font-size: clamp(9px, 1.2vw, 10.5px);
+      line-height: 1.6;
+      color: rgba(255,255,255,0.65);
+      font-style: italic;
+      letter-spacing: 0.1px;
+    }
+
+    .tier:hover .tier-detail {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 7px;
+    }
+
+    /* Divider lines inside tier */
+    .tier-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 7px 0 5px;
+    }
+
+    /* ── Left rank badge ── */
+    .tier-rank {
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #333;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    /* ── Footer caption ── */
+    .footer {
+      margin-top: 38px;
+      text-align: center;
+      max-width: 680px;
+    }
+
+    .footer-main {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    .footer-main span.up {
+      color: #c9a84c;
+    }
+
+    .footer-main span.down {
+      color: #555;
+    }
+
+    .footer-sub {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #333;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Connector lines between tiers ── */
+    .connector {
+      width: 2px;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      margin: 0 auto;
+    }
+
+    /* ── Title accent line ── */
+    .title-line {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      margin: 16px auto 0;
+    }
+
+    /* ── Subtle scan-line overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── Responsive tweaks ── */
+    @media (max-width: 600px) {
+      .tier-1 { width: 40%; }
+      .tier-2 { width: 52%; }
+      .tier-3 { width: 65%; }
+      .tier-4 { width: 76%; }
+      .tier-5 { width: 87%; }
+      .tier-6 { width: 94%; }
+      .tier-7 { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+  <div class="header">
+    <div class="header-eyebrow">A Structural Analysis</div>
+    <h1>The Global Power Pyramid</h1>
+    <div class="title-line"></div>
+    <p class="header-sub">Who controls what — and how power concentrates toward the apex</p>
+  </div>
+
+  <!-- ══ PYRAMID ══ -->
+  <div class="pyramid">
+
+    <!-- TIER 1 — Financial Capital -->
+    <div class="tier tier-1">
+      <div class="tier-inner">
+        <div class="tier-header">
+          <span class="tier-icon">&#x1F3E6;</span>
+          <span class="tier-number">I</span>
+          <span class="tier-name">Financial Capital</span>
+        </div>
+        <div class="tier-entities">
+          BIS &middot; Central Banks &middot; BlackRock &middot; Vanguard &middot; State Street &middot; IMF &middot; World Bank
+        </div>
+        <div class="tier-detail">
+          Controls reserve currencies, interest rates, sovereign debt terms, and the rules of the global monetary system. Asset managers hold decisive ownership stakes in virtually every major corporation on Earth.
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- TIER 2 — Nation-States -->
+    <div class="tier tier-2">
+      <div class="tier-inner">
+        <div class="tier-header">
+          <span class="tier-icon">&#x1F30D;</span>
+          <span class="tier-number">II</span>
+          <span class="tier-name">Nation-States</span>
+        </div>
+        <div class="tier-entities">
+          United States &middot; United Kingdom &middot; Israel &middot; Saudi Arabia &middot; China &middot; European Union<br />
+          <span style="opacity:0.6; font-size:0.9em;">Military projection &middot; Currency sovereignty &middot; Sanctions enforcement</span>
+        </div>
+        <div class="tier-detail">
+          Nominally sovereign governments that hold the monopoly on legitimate force, control border regimes, and backstop reserve currencies. In practice, constrained upward by bond markets and downward by electoral cycles.
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- TIER 3 — Intelligence & Influence -->
+    <div class="tier tier-3">
+      <div class="tier-inner">
+        <div class="tier-header">
+          <span class="tier-icon">&#x1F441;</span>
+          <span class="tier-number">III</span>
+          <span class="tier-name">Intelligence &amp; Influence</span>
+        </div>
+        <div class="tier-entities">
+          CIA &middot; Mossad &middot; MI6 &middot; NSA &middot; FSB
+          <span style="opacity:0.45; margin: 0 5px;">&#124;</span>
+          CFR &middot; Brookings &middot; RAND<br />
+          6 Media Corporations (&#126;90% of U.S. media) &middot; Platform algorithms
+        </div>
+        <div class="tier-detail">
+          Shapes what is knowable, sayable, and thinkable at scale. Intelligence agencies influence elections, destabilize adversaries, and run covert economic warfare. Think tanks launder policy into consensus. Media sets the Overton window.
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- TIER 4 — Political Layer -->
+    <div class="tier tier-4">
+      <div class="tier-inner">
+        <div class="tier-header">
+          <span class="tier-icon">&#x1F3DB;</span>
+          <span class="tier-number">IV</span>
+          <span class="tier-name">Political Layer</span>
+        </div>
+        <div class="tier-entities">
+          Congress &middot; Presidents &middot; Prime Ministers &middot; Courts &middot; Regulatory Agencies<br />
+          <span style="opacity:0.6; font-size:0.9em;">Downstream of the layer above &mdash; translating approved policy into law</span>
+        </div>
+        <div class="tier-detail">
+          The visible face of governance. Elected officials operate within windows of acceptable action defined by campaign finance, media narratives, and intelligence briefings. Courts and regulators provide institutional legitimacy.
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- TIER 5 — Corporate Layer -->
+    <div class="tier tier-5">
+      <div class="tier-inner">
+        <div class="tier-header">
+          <span class="tier-icon">&#x2699;</span>
+          <span class="tier-number">V</span>
+          <span class="tier-name">Corporate Layer</span>
+        </div>
+        <div class="tier-entities">
+          Lockheed Martin &middot; Raytheon &middot; Boeing &middot; Palantir
+          <span style="opacity:0.45; margin: 0 4px;">&#124;</span>
+          Pfizer &middot; Google &middot; Meta &middot; Microsoft<br />
+          Shell &middot; Saudi Aramco &middot; JPMorgan &middot; Goldman Sachs
+        </div>
+        <div class="tier-detail">
+          Executes the industrial and digital infrastructure of power. Defense contractors convert tax revenue into weapons systems. Tech platforms mine behavioral data. Pharma monetizes biological risk. Energy majors underwrite geopolitical alignment.
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- TIER 6 — Proxy Armies & NGOs -->
+    <div class="tier tier-6">
+      <div class="tier-inner">
+        <div class="tier-header">
+          <span class="tier-icon">&#x2694;</span>
+          <span class="tier-number">VI</span>
+          <span class="tier-name">Proxy Armies &amp; NGOs</span>
+        </div>
+        <div class="tier-entities">
+          NATO &middot; IDF &middot; Gulf Armies &middot; Wagner Group &middot; Funded Militias
+          <span style="opacity:0.45; margin: 0 4px;">&#124;</span>
+          NED-funded NGOs &middot; Color Revolution infrastructure<br />
+          Proxy conflicts &middot; IMF debt traps &middot; Regime-change pipelines
+        </div>
+        <div class="tier-detail">
+          The operational arm of geopolitical strategy. Military alliances project force without direct accountability. NGOs provide civil-society cover for destabilization. Debt instruments enforce compliance without occupation.
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- TIER 7 — The Public -->
+    <div class="tier tier-7">
+      <div class="tier-inner">
+        <div class="tier-header">
+          <span class="tier-icon">&#x1F465;</span>
+          <span class="tier-number">VII</span>
+          <span class="tier-name">The Public</span>
+        </div>
+        <div class="tier-entities">
+          You &nbsp;&middot;&nbsp; Taxpayers &nbsp;&middot;&nbsp; Consumers &nbsp;&middot;&nbsp; Soldiers &nbsp;&middot;&nbsp; Voters &nbsp;&middot;&nbsp; Patients &nbsp;&middot;&nbsp; Users<br />
+          <span style="opacity:0.6; font-size:0.9em;">Fund it all &nbsp;&middot;&nbsp; Fight the wars &nbsp;&middot;&nbsp; Buy the products &nbsp;&middot;&nbsp; Provide the data &nbsp;&middot;&nbsp; Carry the debt</span>
+        </div>
+        <div class="tier-detail">
+          The broadest base and the ultimate resource. Labor, attention, tax revenue, military service, consumer spending, and biological data flow upward. In return: managed narratives, legal protections calibrated to compliance, and the periodical right to choose between pre-approved candidates.
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- end .pyramid -->
+
+  <!-- ══ FOOTER ══ -->
+  <div class="footer">
+    <div class="footer-main">
+      Money flows <span class="up">UP</span> &nbsp;&#183;&nbsp; Consequences flow <span class="down">DOWN</span>
+    </div>
+    <div class="footer-sub">Hover each tier to expand &nbsp;&#183;&nbsp; The pyramid is structural, not conspiratorial</div>
+  </div>
+
+</body>
+</html>
