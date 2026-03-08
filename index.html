@@ -274,13 +274,128 @@
 
     /* ── Responsive tweaks ── */
     @media (max-width: 600px) {
-      .tier-1 { width: 40%; }
-      .tier-2 { width: 52%; }
-      .tier-3 { width: 65%; }
-      .tier-4 { width: 76%; }
-      .tier-5 { width: 87%; }
-      .tier-6 { width: 94%; }
+      /* Body padding */
+      body {
+        padding: 28px 12px 40px;
+      }
+
+      /* Header tightening */
+      .header {
+        margin-bottom: 28px;
+      }
+
+      .header-eyebrow {
+        font-size: 10px;
+        letter-spacing: 3px;
+      }
+
+      .header-sub {
+        font-size: 13px;
+      }
+
+      /* Pyramid tier widths — wider on mobile so text fits */
+      .tier-1 { width: 52%; }
+      .tier-2 { width: 60%; }
+      .tier-3 { width: 70%; }
+      .tier-4 { width: 80%; }
+      .tier-5 { width: 90%; }
+      .tier-6 { width: 96%; }
       .tier-7 { width: 100%; }
+
+      /* Allow overflow for rank badges */
+      .tier {
+        overflow: visible;
+      }
+
+      /* Hide rank badges on mobile — roman numerals already visible */
+      .tier-rank {
+        display: none;
+      }
+
+      /* Tier inner padding */
+      .tier-inner {
+        padding: 10px 12px 11px;
+      }
+
+      /* Tier name: allow wrapping, bump size */
+      .tier-name {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+
+      /* Entities: readable size */
+      .tier-entities {
+        font-size: 10px;
+        line-height: 1.5;
+      }
+
+      /* Detail panel: readable size */
+      .tier-detail {
+        font-size: 10px;
+        line-height: 1.55;
+      }
+
+      /* Tier header gap tighter */
+      .tier-header {
+        gap: 6px;
+      }
+
+      /* Tier icon slightly smaller */
+      .tier-icon {
+        font-size: 14px;
+      }
+
+      /* Disable hover expansion on touch (CSS side) */
+      .tier:hover .tier-detail {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+      }
+
+      /* Disable hover scale on mobile (prevents iOS sticky hover) */
+      .tier:hover {
+        transform: none;
+        filter: none;
+      }
+
+      .tier:hover::before {
+        opacity: 0;
+      }
+
+      /* Tap-to-expand via .active class (set by JS) */
+      .tier.active .tier-detail {
+        max-height: 200px;
+        opacity: 1;
+        margin-top: 7px;
+      }
+
+      /* Active tier visual feedback */
+      .tier.active {
+        transform: scaleY(1.02) scaleX(1.005);
+        z-index: 10;
+        filter: brightness(1.1);
+      }
+
+      .tier.active::before {
+        opacity: 1;
+      }
+
+      /* Footer */
+      .footer {
+        margin-top: 24px;
+      }
+
+      .footer-main {
+        font-size: 14px;
+        letter-spacing: 1.5px;
+      }
+
+      .footer-sub {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
@@ -450,6 +565,38 @@
     </div>
     <div class="footer-sub">Hover each tier to expand &nbsp;&#183;&nbsp; The pyramid is structural, not conspiratorial</div>
   </div>
+
+  <!-- ══ TAP-TO-EXPAND (MOBILE) ══ -->
+  <script>
+  (function() {
+    var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (!isTouch) return;
+
+    // Swap footer hint for touch
+    var footerSub = document.querySelector('.footer-sub');
+    if (footerSub) {
+      footerSub.innerHTML = footerSub.innerHTML.replace('Hover', 'Tap');
+    }
+
+    // Accordion tap-to-expand
+    var tiers = document.querySelectorAll('.tier');
+    tiers.forEach(function(tier) {
+      tier.style.cursor = 'pointer';
+      tier.addEventListener('click', function(e) {
+        var wasActive = this.classList.contains('active');
+        tiers.forEach(function(t) { t.classList.remove('active'); });
+        if (!wasActive) this.classList.add('active');
+      });
+    });
+
+    // Tap outside closes all
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.tier')) {
+        tiers.forEach(function(t) { t.classList.remove('active'); });
+      }
+    });
+  })();
+  </script>
 
 </body>
 </html>
