@@ -240,6 +240,13 @@
       letter-spacing: 0.5px;
     }
 
+    /* Hide mobile hint by default, show on touch devices */
+    .hint-mobile { display: none; }
+    @media (hover: none) and (pointer: coarse) {
+      .hint-desktop { display: none; }
+      .hint-mobile { display: inline; }
+    }
+
     /* ── Connector lines between tiers ── */
     .connector {
       width: 2px;
@@ -272,14 +279,51 @@
       z-index: 999;
     }
 
-    /* ── Tap-to-expand (mobile + desktop) ── */
+    /* ── Tap-to-expand (works everywhere via JS click) ── */
     .tier.expanded .tier-detail {
-      max-height: 120px;
+      max-height: 160px;
       opacity: 1;
       margin-top: 7px;
     }
 
-    /* ── Responsive tweaks ── */
+    .tier.expanded {
+      filter: brightness(1.12);
+      z-index: 10;
+    }
+
+    /* ── Touch devices: disable hover, rely on tap ── */
+    @media (hover: none) and (pointer: coarse) {
+      .tier:hover {
+        transform: none;
+        filter: none;
+      }
+      .tier:hover::before {
+        opacity: 0;
+      }
+      .tier:hover .tier-detail {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+      }
+      .tier {
+        cursor: pointer;
+      }
+      /* Expanded state (set by JS) overrides hover disable */
+      .tier.expanded .tier-detail {
+        max-height: 160px;
+        opacity: 1;
+        margin-top: 7px;
+      }
+      .tier.expanded {
+        filter: brightness(1.12);
+        z-index: 10;
+      }
+      .tier.expanded .tier-inner {
+        box-shadow: inset 3px 0 0 rgba(255,255,255,0.25);
+      }
+    }
+
+    /* ── Responsive tweaks (small screens) ── */
     @media (max-width: 600px) {
       body {
         padding: 24px 12px 60px;
@@ -553,30 +597,36 @@
   </div>
 
   <script>
-    // Tap-to-expand for touch devices (keeps hover working on desktop)
-    document.querySelectorAll('.tier').forEach(tier => {
-      tier.addEventListener('click', function(e) {
-        const wasExpanded = this.classList.contains('expanded');
-        // Close all others
-        document.querySelectorAll('.tier.expanded').forEach(t => t.classList.remove('expanded'));
-        // Toggle clicked tier
-        if (!wasExpanded) {
-          this.classList.add('expanded');
+    (function() {
+      var tiers = document.querySelectorAll('.tier');
+
+      // Accordion tap/click-to-expand
+      tiers.forEach(function(tier) {
+        tier.style.cursor = 'pointer';
+        tier.addEventListener('click', function(e) {
+          var wasExpanded = this.classList.contains('expanded');
+          tiers.forEach(function(t) { t.classList.remove('expanded'); });
+          if (!wasExpanded) this.classList.add('expanded');
+        });
+      });
+
+      // Click/tap outside closes all
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.tier')) {
+          tiers.forEach(function(t) { t.classList.remove('expanded'); });
         }
       });
-    });
 
-    // Show correct hint text
-    const isMobile = window.matchMedia('(max-width: 600px)').matches || 'ontouchstart' in window;
-    if (isMobile) {
-      const d = document.querySelector('.hint-desktop');
-      const m = document.querySelector('.hint-mobile');
-      if (d) d.style.display = 'none';
-      if (m) m.style.display = 'inline';
-    } else {
-      const m = document.querySelector('.hint-mobile');
-      if (m) m.style.display = 'none';
-    }
+      // Hint text: CSS handles it via @media (hover: none), JS as fallback
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+        || window.matchMedia('(hover: none)').matches;
+      if (isTouch) {
+        var d = document.querySelector('.hint-desktop');
+        var m = document.querySelector('.hint-mobile');
+        if (d) d.style.display = 'none';
+        if (m) m.style.display = 'inline';
+      }
+    })();
   </script>
 
 </body>
