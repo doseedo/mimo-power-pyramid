@@ -272,113 +272,68 @@
       z-index: 999;
     }
 
+    /* ── Tap-to-expand (mobile + desktop) ── */
+    .tier.expanded .tier-detail {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 7px;
+    }
+
     /* ── Responsive tweaks ── */
     @media (max-width: 600px) {
-      /* Body padding — less wasted space */
       body {
-        padding: 20px 10px 36px;
+        padding: 24px 12px 60px;
       }
 
-      /* Header tightening */
       .header {
-        margin-bottom: 20px;
-      }
-
-      .header-eyebrow {
-        font-size: 9px;
-        letter-spacing: 3px;
-        margin-bottom: 8px;
-      }
-
-      .header h1 {
-        font-size: 26px;
+        margin-bottom: 28px;
       }
 
       .header-sub {
-        font-size: 12px;
-        margin-top: 8px;
+        font-size: 13px;
       }
 
-      .title-line {
-        margin: 10px auto 0;
+      /* Stack vertically — readability > pyramid shape on mobile */
+      .tier-1, .tier-2, .tier-3, .tier-4, .tier-5, .tier-6, .tier-7 {
+        width: 100%;
       }
 
-      /* Pyramid — full width stacked on mobile, ditch the narrowing shape */
-      .tier-1 { width: 100%; }
-      .tier-2 { width: 100%; }
-      .tier-3 { width: 100%; }
-      .tier-4 { width: 100%; }
-      .tier-5 { width: 100%; }
-      .tier-6 { width: 100%; }
-      .tier-7 { width: 100%; }
-
-      /* Tier spacing */
-      .tier {
-        overflow: visible;
-        margin-bottom: 4px;
-        border-radius: 6px;
-      }
-
-      /* Connectors hidden on mobile — tiers stacked tight */
-      .connector {
-        display: none;
-      }
-
-      /* Hide rank badges on mobile */
-      .tier-rank {
-        display: none;
-      }
-
-      /* Tier inner — bigger tap target (Apple HIG: min 44px) */
       .tier-inner {
         padding: 14px 14px 15px;
-        min-height: 48px;
-        border-radius: 6px;
       }
 
-      /* Tier name: readable, allow wrapping */
+      /* Readable font sizes */
       .tier-name {
+        font-size: 13px;
         white-space: normal;
         overflow: visible;
-        text-overflow: clip;
-        font-size: 13px;
-        letter-spacing: 0.8px;
+        text-overflow: unset;
+        line-height: 1.3;
       }
 
-      /* Entities: actually readable */
       .tier-entities {
-        font-size: 11.5px;
-        line-height: 1.5;
-      }
-
-      /* Detail panel: comfortable reading */
-      .tier-detail {
-        font-size: 11.5px;
+        font-size: 11px;
         line-height: 1.6;
       }
 
-      /* Tier header */
-      .tier-header {
-        gap: 7px;
-        margin-bottom: 4px;
-      }
-
-      .tier-icon {
-        font-size: 15px;
+      .tier-detail {
+        font-size: 11px;
       }
 
       .tier-number {
         font-size: 8px;
       }
 
-      /* Disable hover expansion on touch (CSS side) */
-      .tier:hover .tier-detail {
-        max-height: 0;
-        opacity: 0;
-        margin-top: 0;
+      .tier-icon {
+        font-size: 14px;
       }
 
-      /* Disable hover scale on mobile (prevents iOS sticky hover) */
+      /* Hide rank badges — they clip on mobile */
+      .tier-rank {
+        display: none;
+      }
+
+      /* Disable hover effects on touch (tap handles it) */
       .tier:hover {
         transform: none;
         filter: none;
@@ -388,41 +343,40 @@
         opacity: 0;
       }
 
-      /* Tap-to-expand via .active class (set by JS) */
-      .tier.active .tier-detail {
-        max-height: 250px;
-        opacity: 1;
-        margin-top: 8px;
+      .tier:hover .tier-detail {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
       }
 
-      /* Active tier visual feedback */
-      .tier.active {
-        transform: scale(1.01);
-        z-index: 10;
+      /* Expanded state overrides hover disable */
+      .tier.expanded .tier-detail {
+        max-height: 160px;
+        opacity: 1;
+        margin-top: 7px;
+      }
+
+      .tier.expanded {
         filter: brightness(1.12);
       }
 
-      .tier.active::before {
-        opacity: 1;
+      /* Tap target spacing */
+      .tier {
+        margin-bottom: 6px;
+        min-height: 44px;
+        cursor: pointer;
       }
 
-      /* Left border accent on active tier */
-      .tier.active .tier-inner {
-        box-shadow: inset 3px 0 0 rgba(255,255,255,0.3), inherit;
-      }
-
-      /* Footer */
-      .footer {
-        margin-top: 20px;
+      .connector {
+        height: 0;
       }
 
       .footer-main {
-        font-size: 13px;
-        letter-spacing: 1.2px;
+        font-size: 15px;
       }
 
       .footer-sub {
-        font-size: 10px;
+        font-size: 11px;
       }
     }
   </style>
@@ -591,39 +545,38 @@
     <div class="footer-main">
       Money flows <span class="up">UP</span> &nbsp;&#183;&nbsp; Consequences flow <span class="down">DOWN</span>
     </div>
-    <div class="footer-sub">Hover each tier to expand &nbsp;&#183;&nbsp; The pyramid is structural, not conspiratorial</div>
+    <div class="footer-sub">
+      <span class="hint-desktop">Hover each tier to expand</span>
+      <span class="hint-mobile">Tap each tier to expand</span>
+      &nbsp;&#183;&nbsp; The pyramid is structural, not conspiratorial
+    </div>
   </div>
 
-  <!-- ══ TAP-TO-EXPAND (MOBILE) ══ -->
   <script>
-  (function() {
-    var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (!isTouch) return;
-
-    // Swap footer hint for touch
-    var footerSub = document.querySelector('.footer-sub');
-    if (footerSub) {
-      footerSub.innerHTML = footerSub.innerHTML.replace('Hover', 'Tap');
-    }
-
-    // Accordion tap-to-expand
-    var tiers = document.querySelectorAll('.tier');
-    tiers.forEach(function(tier) {
-      tier.style.cursor = 'pointer';
+    // Tap-to-expand for touch devices (keeps hover working on desktop)
+    document.querySelectorAll('.tier').forEach(tier => {
       tier.addEventListener('click', function(e) {
-        var wasActive = this.classList.contains('active');
-        tiers.forEach(function(t) { t.classList.remove('active'); });
-        if (!wasActive) this.classList.add('active');
+        const wasExpanded = this.classList.contains('expanded');
+        // Close all others
+        document.querySelectorAll('.tier.expanded').forEach(t => t.classList.remove('expanded'));
+        // Toggle clicked tier
+        if (!wasExpanded) {
+          this.classList.add('expanded');
+        }
       });
     });
 
-    // Tap outside closes all
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.tier')) {
-        tiers.forEach(function(t) { t.classList.remove('active'); });
-      }
-    });
-  })();
+    // Show correct hint text
+    const isMobile = window.matchMedia('(max-width: 600px)').matches || 'ontouchstart' in window;
+    if (isMobile) {
+      const d = document.querySelector('.hint-desktop');
+      const m = document.querySelector('.hint-mobile');
+      if (d) d.style.display = 'none';
+      if (m) m.style.display = 'inline';
+    } else {
+      const m = document.querySelector('.hint-mobile');
+      if (m) m.style.display = 'none';
+    }
   </script>
 
 </body>
