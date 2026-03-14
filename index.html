@@ -274,78 +274,101 @@
 
     /* ── Responsive tweaks ── */
     @media (max-width: 600px) {
-      /* Body padding */
+      /* Body padding — less wasted space */
       body {
-        padding: 28px 12px 40px;
+        padding: 20px 10px 36px;
       }
 
       /* Header tightening */
       .header {
-        margin-bottom: 28px;
+        margin-bottom: 20px;
       }
 
       .header-eyebrow {
-        font-size: 10px;
+        font-size: 9px;
         letter-spacing: 3px;
+        margin-bottom: 8px;
+      }
+
+      .header h1 {
+        font-size: 26px;
       }
 
       .header-sub {
-        font-size: 13px;
+        font-size: 12px;
+        margin-top: 8px;
       }
 
-      /* Pyramid tier widths — wider on mobile so text fits */
-      .tier-1 { width: 52%; }
-      .tier-2 { width: 60%; }
-      .tier-3 { width: 70%; }
-      .tier-4 { width: 80%; }
-      .tier-5 { width: 90%; }
-      .tier-6 { width: 96%; }
+      .title-line {
+        margin: 10px auto 0;
+      }
+
+      /* Pyramid — full width stacked on mobile, ditch the narrowing shape */
+      .tier-1 { width: 100%; }
+      .tier-2 { width: 100%; }
+      .tier-3 { width: 100%; }
+      .tier-4 { width: 100%; }
+      .tier-5 { width: 100%; }
+      .tier-6 { width: 100%; }
       .tier-7 { width: 100%; }
 
-      /* Allow overflow for rank badges */
+      /* Tier spacing */
       .tier {
         overflow: visible;
+        margin-bottom: 4px;
+        border-radius: 6px;
       }
 
-      /* Hide rank badges on mobile — roman numerals already visible */
+      /* Connectors hidden on mobile — tiers stacked tight */
+      .connector {
+        display: none;
+      }
+
+      /* Hide rank badges on mobile */
       .tier-rank {
         display: none;
       }
 
-      /* Tier inner padding */
+      /* Tier inner — bigger tap target (Apple HIG: min 44px) */
       .tier-inner {
-        padding: 10px 12px 11px;
+        padding: 14px 14px 15px;
+        min-height: 48px;
+        border-radius: 6px;
       }
 
-      /* Tier name: allow wrapping, bump size */
+      /* Tier name: readable, allow wrapping */
       .tier-name {
         white-space: normal;
         overflow: visible;
         text-overflow: clip;
-        font-size: 11px;
-        letter-spacing: 1px;
+        font-size: 13px;
+        letter-spacing: 0.8px;
       }
 
-      /* Entities: readable size */
+      /* Entities: actually readable */
       .tier-entities {
-        font-size: 10px;
+        font-size: 11.5px;
         line-height: 1.5;
       }
 
-      /* Detail panel: readable size */
+      /* Detail panel: comfortable reading */
       .tier-detail {
-        font-size: 10px;
-        line-height: 1.55;
+        font-size: 11.5px;
+        line-height: 1.6;
       }
 
-      /* Tier header gap tighter */
+      /* Tier header */
       .tier-header {
-        gap: 6px;
+        gap: 7px;
+        margin-bottom: 4px;
       }
 
-      /* Tier icon slightly smaller */
       .tier-icon {
-        font-size: 14px;
+        font-size: 15px;
+      }
+
+      .tier-number {
+        font-size: 8px;
       }
 
       /* Disable hover expansion on touch (CSS side) */
@@ -367,34 +390,39 @@
 
       /* Tap-to-expand via .active class (set by JS) */
       .tier.active .tier-detail {
-        max-height: 200px;
+        max-height: 250px;
         opacity: 1;
-        margin-top: 7px;
+        margin-top: 8px;
       }
 
       /* Active tier visual feedback */
       .tier.active {
-        transform: scaleY(1.02) scaleX(1.005);
+        transform: scale(1.01);
         z-index: 10;
-        filter: brightness(1.1);
+        filter: brightness(1.12);
       }
 
       .tier.active::before {
         opacity: 1;
       }
 
+      /* Left border accent on active tier */
+      .tier.active .tier-inner {
+        box-shadow: inset 3px 0 0 rgba(255,255,255,0.3), inherit;
+      }
+
       /* Footer */
       .footer {
-        margin-top: 24px;
+        margin-top: 20px;
       }
 
       .footer-main {
-        font-size: 14px;
-        letter-spacing: 1.5px;
+        font-size: 13px;
+        letter-spacing: 1.2px;
       }
 
       .footer-sub {
-        font-size: 11px;
+        font-size: 10px;
       }
     }
   </style>
